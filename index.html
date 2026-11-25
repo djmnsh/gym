@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>מעקב אימונים</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="אימונים">
+<meta name="theme-color" content="#131315">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Heebo:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#131315;--card:#1d1d20;--card2:#26262a;--tx:#f5f5f7;--mut:#8b8b93;--ac:#ff4a0f;--ln:#2d2d32;--inp:#2a2a2e;--disp:'Anton','Heebo',Impact,sans-serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#131315;--card:#1d1d20;--card2:#26262a;--tx:#f5f5f7;--mut:#8b8b93;--ac:#ff4a0f;--ln:#2d2d32;--inp:#2a2a2e}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#131315;--card:#1d1d20;--card2:#26262a;--tx:#f5f5f7;--mut:#8b8b93;--ac:#ff4a0f;--ln:#2d2d32;--inp:#2a2a2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:var(--bg)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;color:var(--tx);font:16px/1.4 'Heebo',system-ui,-apple-system,"Segoe UI",Arial,sans-serif;padding-bottom:110px;min-height:100vh;
+background:radial-gradient(130% 320px at 50% 0%,#6a2a12 0%,rgba(106,42,18,.35) 45%,transparent 100%) no-repeat,var(--bg)}
+main{max-width:520px;margin:0 auto;padding:6px 16px}
+nav{display:flex;gap:4px;position:sticky;top:env(safe-area-inset-top,0px);margin:10px auto 6px;padding:5px;max-width:488px;width:calc(100% - 32px);background:rgba(29,29,32,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--ln);border-radius:20px;z-index:5}
+nav button{flex:1;padding:10px 2px;border:0;background:transparent;color:var(--mut);border-radius:15px;font:inherit;font-size:14px;font-weight:500}
+nav button.on{background:#f2f2f5;color:#161618;font-weight:700}
+.hero{padding:14px 2px 6px}
+h1{margin:2px 0 0;font:400 44px/1 var(--disp);text-transform:uppercase;letter-spacing:-.01em}
+h2{margin:0 0 4px;font:400 24px/1.05 var(--disp);text-transform:uppercase;letter-spacing:-.005em}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:22px;padding:16px;margin-bottom:12px}
+.mut{color:var(--mut);font-size:13px}
+.row{display:flex;gap:8px;align-items:center;margin-top:10px}
+input,textarea,select{background:var(--inp);color:var(--tx);border:1px solid transparent;border-radius:14px;padding:11px;font:inherit;width:100%;min-width:0;outline:0}
+input:focus,textarea:focus,select:focus{border-color:var(--ac)}
+input[type=number]{text-align:center;font-weight:700;font-size:17px}
+textarea{min-height:100px}
+.btn{border:0;background:var(--ac);color:#fff;border-radius:18px;padding:14px 16px;font:inherit;font-weight:700;font-size:16px}
+.btn:active{transform:scale(.98)}
+.btn:disabled{opacity:.5}
+.btn.alt{background:var(--card2);color:var(--tx)}
+.btn.big{width:100%;margin-top:10px}
+.btn.sm{padding:9px 16px;font-size:14px;border-radius:14px}
+.x{background:none;border:0;color:var(--mut);font-size:22px;padding:8px 12px}
+.n{width:24px;height:24px;line-height:24px;text-align:center;border-radius:99px;background:var(--card2);color:var(--mut);font-size:12px;flex:none}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.reg{position:relative;border:1px solid var(--ln);background:var(--card);color:var(--tx);border-radius:22px;min-height:104px;padding:14px;font:400 26px/1 var(--disp);text-transform:uppercase;text-align:right;display:flex;align-items:flex-end}
+.reg:active{transform:scale(.98)}
+.reg.wide{grid-column:1/-1;min-height:64px;font-size:26px;align-items:center;justify-content:center;text-align:center}
+.reg.done{border-color:var(--ac);background:var(--ac);color:#fff}
+.reg.done .bd{background:#fff;color:var(--ac)}
+.bd{position:absolute;top:12px;left:12px;background:var(--ac);color:#fff;border-radius:99px;font:700 12px 'Heebo';min-width:22px;padding:2px 7px;text-align:center}
+.ex{display:flex;align-items:center;gap:14px;width:100%;text-align:right;background:var(--card);border:1px solid var(--ln);color:var(--tx);border-radius:20px;padding:14px 16px;margin-bottom:10px;font:inherit}
+.exi{flex:1;min-width:0}
+.thumb{width:84px;height:84px;flex:none;border-radius:18px;overflow:hidden;background:radial-gradient(circle at 72% 18%,rgba(255,74,15,.30),transparent 62%),var(--card2)}
+.lt{width:100%;border-collapse:separate;border-spacing:6px;margin:6px -6px 0;table-layout:fixed}
+.lt td,.lt th{border-radius:12px;padding:10px 4px;text-align:center}
+.lt td{background:var(--card2);font-weight:700;font-size:17px}
+.lt th{color:var(--mut);font-weight:500;font-size:13px}
+.pv{flex:1;background:var(--inp);border:1px solid transparent;color:var(--tx);border-radius:14px;padding:7px 4px;font:inherit;display:flex;flex-direction:column;align-items:center}
+.pv .lb{font-size:11px;color:var(--mut)}
+.pv b{font:400 24px/1.15 var(--disp)}
+.pv.empty b{color:var(--mut)}
+#sheet .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:20;display:flex;align-items:flex-end}
+.sh{width:100%;max-width:520px;margin:0 auto;background:var(--card);border-radius:26px 26px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));border:1px solid var(--ln);border-bottom:0}
+.wr{display:flex;gap:6px;direction:ltr;margin:12px 0 4px}
+.ww{position:relative;flex:1}
+.ww.fr{flex:.6}
+.band{position:absolute;left:0;right:0;top:88px;height:44px;border-radius:12px;background:rgba(255,255,255,.08);pointer-events:none}
+.wheel{height:220px;overflow-y:auto;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:88px 0;overscroll-behavior:contain}
+.wheel::-webkit-scrollbar{display:none}
+.wi{height:44px;text-align:center;scroll-snap-align:center;font:400 24px/44px var(--disp);color:var(--mut)}
+.wi.sel{color:var(--tx);font-size:28px}
+.thumb.big{width:100%;height:190px;border-radius:20px;margin-bottom:14px}
+.fig{width:100%;height:100%;display:block}
+.fig .fl,.fig .fo,.fig .fg,.fig .hd,.fig .fc,.fig .fp{fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:5}
+.fig .fl,.fig .hd{stroke:#ececf1}
+.fig .fo{stroke:var(--ac);stroke-width:6}
+.fig .fg{stroke:#5a5a63;stroke-width:4}
+.fig .pl{fill:var(--ac)}
+.fig .fc{stroke:#c9a66b;stroke-width:3.5}
+.fig .fp{stroke:#4a4a52;stroke-width:9}
+.ex b{display:block;font:400 20px/1.1 var(--disp);text-transform:uppercase}
+.ex .mut{display:inline-block;margin-top:8px;background:var(--card2);padding:3px 10px;border-radius:9px}
+.ex.dn{border-color:var(--ac)}
+.ex.dn .mut{background:rgba(255,74,15,.18);color:#ff8a5c}
+.chips{display:flex;gap:4px;align-items:center;margin:8px 0 14px;padding:5px;background:var(--card);border:1px solid var(--ln);border-radius:18px}
+.chips .mut{padding:0 10px}
+.chip{flex:1;border:0;background:transparent;color:var(--mut);border-radius:14px;padding:9px 14px;font:inherit;font-size:15px;font-weight:500}
+.chip.on{background:#f2f2f5;color:#161618;font-weight:700}
+#cd{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%);width:160px;height:200px;gap:6px;border-radius:34px;background:rgba(29,29,32,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--ln);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:30;opacity:0;pointer-events:none;transition:opacity .15s}
+#cd.on{opacity:1}
+#cd button{pointer-events:none;margin-top:8px;min-width:96px}
+#cd.on button{pointer-events:auto}
+#cd small{color:var(--mut);font-size:13px}
+#cd b{font:400 76px/1 var(--disp);color:var(--ac);font-variant-numeric:tabular-nums}
+@keyframes pop{0%{transform:scale(1.35);opacity:.4}100%{transform:scale(1);opacity:1}}
+#timer{position:fixed;bottom:calc(14px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:488px;background:rgba(29,29,32,.9);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--ln);border-radius:30px;padding:8px 10px;display:flex;gap:6px;align-items:center;justify-content:center;z-index:9}
+#timer b{font:400 26px/1 var(--disp);min-width:70px;text-align:center;font-variant-numeric:tabular-nums}
+#timer button{border:0;background:var(--card2);color:var(--tx);border-radius:99px;min-width:44px;height:44px;font:inherit;font-size:14px;font-weight:700}
+#timer button[data-t="0"]{background:var(--ac)}
+#timer.go b{color:var(--ac)}
+svg{width:100%;height:auto;display:block}
+</style>
+</head>
+<body>
+<nav id="nav"></nav>
+<main id="v"></main>
+<div id="sheet"></div>
+<div id="cd"><small>מנוחה</small><b id="cdn">10</b><button class="btn sm" data-cdstop="1">עצור</button></div>
+<div id="timer"><b id="tt">0:00</b>
+<button data-t="60">60</button><button data-t="90">90</button><button data-t="120">120</button><button data-t="180">180</button><button data-t="0">⏹</button></div>
+<script>
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const today=()=>new Date().toLocaleDateString('en-CA');
+const fmtD=d=>new Date(d+'T12:00:00').toLocaleDateString('he-IL',{day:'numeric',month:'short'});
+const clone=o=>JSON.parse(JSON.stringify(o));
+const canon=o=>JSON.stringify(o,(k,v)=>v&&typeof v==='object'&&!Array.isArray(v)?Object.keys(v).sort().reduce((a,x)=>(a[x]=v[x],a),{}):v);
+const R0=[['חזה',['חזה משקולות בשיפוע','חזה דחיקת מוט']],['רגליים',['סקווטים','פשיטת ברך מכשיר']],['גב',['פולי עליון צר','פולי עליון רחב','מתח','מתח עם משקל']],['כתפיים',['דחיקת כתפיים משקולות','פרישת כנפיים משקולות']],['יד קדמית',['יד קדמית מכשיר ישיבה','יד קדמית משקולת ישיבה (יד בודדת)','חבל בעמידה פולי תחתון']],['יד אחורית',['יד אחורית חבל מעל הראש','יד אחורית חבל מלפנים','מקבילים עם משקל','הנפת משקולת מאחורי הראש']],['בטן',['משקולת הגה בשכיבה']]];
+const DEF={regions:R0.map(([n,ex])=>({id:n,name:n,ex:[...ex]})),logs:[],cur:null};
+let S=clone(DEF),tab='w',pick=null,ref=null,dbOk=false;
+let ui={msg:'',rmId:null,pk:null,confirmDel:false,reg:null,ex:null,alt:false,alts:[],altNote:'',altBusy:false,altMsg:'',bk:'',bkMsg:''};
+const OLDN='בטן סטטי צד עם משקל',NEWN='פלאנק צד';
+function norm(){
+  if(!Array.isArray(S.regions)||!S.regions.length)S.regions=clone(DEF.regions);
+  if(!Array.isArray(S.logs))S.logs=[];
+  const rn=x=>x===OLDN?NEWN:x;
+  S.regions.forEach(r=>{if(Array.isArray(r.ex)){r.ex=r.ex.map(rn);r.ex=r.ex.filter((x,i)=>r.ex.indexOf(x)===i)}});
+  S.logs.forEach(l=>(l.entries||[]).forEach(e=>{e.ex=rn(e.ex)}));
+  if(S.cur){if(Array.isArray(S.cur.order))S.cur.order=S.cur.order.map(rn);if(S.cur.sets&&S.cur.sets[OLDN]){S.cur.sets[NEWN]=S.cur.sets[NEWN]||S.cur.sets[OLDN];delete S.cur.sets[OLDN]}}
+  if(S.cur&&!S.cur.order)S.cur={date:today(),label:S.cur.prog||'FB1',sets:S.cur.sets||{},order:Object.keys(S.cur.sets||{})};
+}
+try{const l=localStorage.getItem('gym');if(l)S=Object.assign(S,JSON.parse(l))}catch(e){}
+norm();
+const reg=id=>S.regions.find(r=>r.id===id);
+let inflight=0;
+async function save(){
+  try{localStorage.setItem('gym',JSON.stringify(S))}catch(e){}
+  if(ref){inflight++;try{await ref.set(clone(S))}catch(e){console.error(e)}finally{inflight--}}
+}
+function applyRemote(d,force){
+  const keep=S;S=Object.assign(clone(DEF),d);norm();const n=S;S=keep;
+  if(canon(n)===canon(S))return;
+  const a=document.activeElement;
+  if(!force&&a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))return;
+  S=n;try{localStorage.setItem('gym',JSON.stringify(S))}catch(e){}
+  render();
+}
+async function initDb(){
+  try{
+    if(!window.claude||!claude.use)return;
+    const [db,user]=await Promise.all([claude.use('db'),claude.use('user')]);
+    if(!db||!user)return;
+    const id=await user.id();if(!id)return;
+    ref=db.doc('data/users/'+id+'/state');
+    const s=await ref.get();
+    if(s.exists){applyRemote(s.data(),true)}
+    else if(S.logs.length||S.cur){await ref.set(clone(S))}
+    dbOk=true;render();
+    ref.onSnapshot(sn=>{if(inflight>0||(sn.metadata&&sn.metadata.hasPendingWrites))return;if(sn.exists)applyRemote(sn.data())},e=>console.error(e));
+  }catch(e){console.error(e)}
+}
+const lastOf=ex=>{for(let i=S.logs.length-1;i>=0;i--){const e=S.logs[i].entries.find(x=>x.ex===ex&&x.sets.length);if(e)return {d:S.logs[i].date,sets:e.sets}}return null};
+function hcells(ex,l,f){
+  const mx=Math.max(3,l.sets.length,...S.logs.map(g=>{const e=g.entries.find(x=>x.ex===ex);return e?e.sets.length:0}));
+  return Array.from({length:mx},(_,i)=>l.sets[i]?`<td>${esc(l.sets[i][f])}</td>`:'<td>—</td>').join('');
+}
+function suggestW(ex){
+  const hist=[];for(let i=S.logs.length-1;i>=0;i--){const e=S.logs[i].entries.find(x=>x.ex===ex&&x.sets.length);if(e)hist.push(e.sets)}
+  if(!hist.length)return '';
+  const sets=hist[0],L=sets[sets.length-1];
+  if(+L.r>=8||sets.length<2)return L.w;
+  const P=sets[sets.length-2];
+  if(+P.w!==+L.w)return P.w;
+  for(const ss of hist){for(let i=ss.length-1;i>=0;i--)if(+ss[i].w<+L.w)return ss[i].w}
+  return L.w;
+}
+const isTimed=ex=>String(ex).includes('סטטי')||String(ex).includes('פלאנק');
+const txt=(sets,ex)=>sets.map(s=>isTimed(ex)?s.r+'″ × '+s.w:s.r+'×'+s.w).join(' · ');
+const nextLabel=()=>{const l=S.logs[S.logs.length-1];return l&&l.prog==='FB1'?'FB2':'FB1'};
+function ensureCur(){if(!S.cur)S.cur={date:today(),label:nextLabel(),sets:{},order:[]};S.cur.started=true}
+const doneList=()=>S.cur?S.cur.order.filter(e=>(S.cur.sets[e]||[]).length):[];
+function render(){
+  document.getElementById('nav').innerHTML=[['w','אימון'],['h','היסטוריה'],['g','התקדמות'],['p','תרגילים']].map(([k,n])=>`<button data-tab="${k}" class="${tab===k?'on':''}">${n}</button>`).join('');
+  document.getElementById('v').innerHTML=({w:vW,h:vH,g:vG,p:vP})[tab]();
+}
+const back=(to,label)=>`<button class="btn alt sm" data-back="${to}">→ ${esc(label)}</button>`;
+function vW(){
+  if(ui.ex)return vEx();
+  if(ui.reg&&ui.alt)return vAlt();
+  if(ui.reg)return vReg();
+  if(!(S.cur&&S.cur.started)){const l=S.logs[S.logs.length-1];
+    return `<div class="hero" style="padding-top:40px"><span class="mut">${fmtD(today())}</span><h1>מוכן<br>לאימון?</h1>${l?`<div class="mut" style="margin-top:10px">האימון האחרון: ${fmtD(l.date)} · ${l.entries.filter(e=>e.sets.length).length} תרגילים</div>`:''}</div><button class="btn big" style="padding:22px;font:400 28px var(--disp);margin-top:28px" data-start="1">התחל אימון</button>`}
+  const done=doneList();
+  const grid=S.regions.map(r=>{const n=r.ex.filter(e=>done.includes(e)).length;return `<button class="reg ${n?'done':''} ${r.id==='בטן'?'wide':''}" data-reg="${esc(r.id)}">${esc(r.name)}${n?`<span class="bd">${n}</span>`:''}</button>`}).join('');
+  const sum=done.length?`<div class="card"><h2>באימון הזה</h2>${done.map(e=>`<div class="mut" style="margin-top:6px"><b style="color:var(--tx)">${esc(e)}</b> — ${esc(txt(S.cur.sets[e],e))}</div>`).join('')}</div>${ui.msg?`<div class="mut" style="color:#ff8a5c;margin:10px 2px 0">${esc(ui.msg)}</div>`:''}<button class="btn big" data-finish="1">סיים ושמור אימון</button>`:'';
+  const del=ui.confirmDel?`<div class="card" style="margin-top:12px"><h2>למחוק את האימון?</h2><div class="mut">האימון לא יישמר בהיסטוריה.</div><div class="row"><button class="btn" style="flex:1" data-delyes="1">כן, מחק</button><button class="btn alt" style="flex:1" data-delno="1">ביטול</button></div></div>`:`<button class="btn alt big" data-cancel="1">מחק אימון</button>`;
+  return `<div class="hero"><span class="mut">${fmtD(S.cur?S.cur.date:today())}</span><h1>אימון</h1></div><div class="grid">${grid}</div>${sum}${del}`;
+}
+function vReg(){
+  const r=reg(ui.reg);if(!r){ui.reg=null;return vW()}
+  const done=doneList();
+  const items=r.ex.map(e=>{const l=lastOf(e),dn=done.includes(e);return `<button class="ex ${dn?'dn':''}" data-open="${esc(e)}"><div class="thumb">${fig(e,ui.reg)}</div><div class="exi"><b>${dn?'✓ ':''}${esc(e)}</b><span class="mut">${dn?'בוצע היום':l?'אימון אחרון בתאריך: '+fmtD(l.d):'אין היסטוריה'}</span></div></button>`}).join('');
+  return `${back('grid','לאזורים')}<h2 style="margin:10px 2px">${esc(r.name)}</h2>${items||'<div class="mut">אין תרגילים באזור הזה.</div>'}
+  <div class="card"><div class="mut">הוספת תרגיל חדש</div><div class="row"><input id="newex" placeholder="שם התרגיל"><button class="btn sm" data-addex="1">הוסף</button></div></div>
+  ${window.claude&&claude.use?'<button class="btn alt big" data-alt="1">🔍 מציאת תרגיל חלופי</button>':''}`;
+}
+function vAlt(){
+  const r=reg(ui.reg);
+  const res=ui.alts.map((a,i)=>`<div class="card"><b>${esc(a.name)}</b><div class="mut">${esc(a.why)}</div><button class="btn sm" style="margin-top:8px" data-addalt="${i}">+ הוסף לאזור והתחל</button></div>`).join('');
+  return `${back('reg','ל'+r.name)}<h2 style="margin:10px 2px">תרגיל חלופי · ${esc(r.name)}</h2>
+  <div class="card"><div class="mut">אפשר להוסיף הערה (אופציונלי), למשל: מכשיר תפוס, כאב בכתף, בלי משקולות חופשיות</div><div class="row"><input data-note="1" value="${esc(ui.altNote)}" placeholder="הערה"></div><button class="btn big" data-findalt="1" ${ui.altBusy?'disabled':''}>${ui.altBusy?'מחפש...':'הצע חלופות'}</button></div>
+  ${ui.altMsg?`<div class="mut" style="margin:6px 2px">${esc(ui.altMsg)}</div>`:''}${res}`;
+}
+function vEx(){
+  const ex=ui.ex,sets=(S.cur&&S.cur.sets[ex])||[],l=lastOf(ex);
+  const r=ui.reg?reg(ui.reg):null;
+  return `${back(r?'reg':'grid',r?r.name:'לאימון')}<div class="card" style="margin-top:10px"><div class="thumb big">${fig(ex,ui.reg)}</div><h2>${esc(ex)}</h2>${l?`<div class="mut">באימון האחרון בוצע:</div><table class="lt"><tr><th>משקל</th>${hcells(ex,l,'w')}</tr><tr><th>${isTimed(ex)?'זמן':'חזרות'}</th>${hcells(ex,l,'r')}</tr></table>`:'<div class="mut">אין היסטוריה לתרגיל</div>'}
+  ${sets.map((s,i)=>`<div class="row"><span class="n">${i+1}</span><button class="pv ${s.w===''?'empty':''}" data-pk="w" data-ex="${esc(ex)}" data-i="${i}"><span class="lb">ק״ג</span><b>${s.w===''?'—':esc(s.w)}</b></button><button class="pv ${s.r===''?'empty':''}" data-pk="r" data-ex="${esc(ex)}" data-i="${i}"><span class="lb">${isTimed(ex)?'זמן':'חזרות'}</span><b>${s.r===''?'—':esc(s.r)+(isTimed(ex)?'″':'')}</b></button><button class="x" data-del="${esc(ex)}" data-i="${i}">✕</button></div>`).join('')}
+  <button class="btn alt big" data-add="${esc(ex)}">+ סט</button></div><button class="btn big" data-back="grid">סיימתי תרגיל</button>`;
+}
+function vH(){
+  if(!S.logs.length)return '<div class="card mut">ההיסטוריה ריקה.</div>';
+  return [...S.logs].reverse().map(l=>`<div class="card"><div class="row" style="margin:0"><h2 style="flex:1">אימון · ${fmtD(l.date)}</h2><button class="x" data-rm="${esc(l.id)}">🗑</button></div>${ui.rmId===l.id?`<div class="card" style="background:var(--card2);margin:10px 0 0"><h2>למחוק את האימון?</h2><div class="mut">לא ניתן לשחזר אותו.</div><div class="row"><button class="btn" style="flex:1" data-rmyes="${esc(l.id)}">כן, מחק</button><button class="btn alt" style="flex:1" data-rmno="1">ביטול</button></div></div>`:''}${l.entries.filter(e=>e.sets.length).map(e=>`<div class="mut" style="margin-top:6px"><b style="color:var(--tx)">${esc(e.ex)}</b> — ${esc(txt(e.sets,e.ex))}</div>`).join('')}</div>`).join('');
+}
+function vG(){
+  const all=[...new Set(S.logs.flatMap(l=>l.entries.filter(e=>e.sets.length).map(e=>e.ex)))];
+  if(!all.length)return '<div class="card mut">התרגילים יופיעו כאן אחרי האימון הראשון.</div>';
+  if(!pick||!all.includes(pick))pick=all[0];
+  const pts=S.logs.map(l=>{const e=l.entries.find(x=>x.ex===pick&&x.sets.length);return e?{d:l.date,w:Math.max(...e.sets.map(s=>+s.w||0))}:null}).filter(Boolean);
+  const W=320,H=180,m=28,mx=Math.max(...pts.map(p=>p.w)),mn=Math.min(...pts.map(p=>p.w)),rg=(mx-mn)||1;
+  const X=i=>pts.length>1?m+i*(W-2*m)/(pts.length-1):W/2,Y=w=>H-m-(w-mn)*(H-2*m)/rg;
+  const line=pts.map((p,i)=>X(i)+','+Y(p.w)).join(' ');
+  const svg=`<svg viewBox="0 0 ${W} ${H}"><polyline points="${line}" fill="none" stroke="var(--ac)" stroke-width="3" stroke-linejoin="round"/>${pts.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.w)}" r="4" fill="var(--ac)"/><text x="${X(i)}" y="${Y(p.w)-9}" font-size="10" text-anchor="middle" fill="var(--tx)">${p.w}</text>${pts.length<9||i%2===0?`<text x="${X(i)}" y="${H-8}" font-size="9" text-anchor="middle" fill="var(--mut)">${esc(fmtD(p.d))}</text>`:''}`).join('')}</svg>`;
+  return `<div class="card"><select data-pick="1">${all.map(a=>`<option ${a===pick?'selected':''}>${esc(a)}</option>`).join('')}</select><div class="mut" style="margin:8px 0 4px">משקל מקסימלי בכל אימון (ק״ג)</div><div style="direction:ltr">${svg}</div><div class="mut">שיא: ${mx} ק״ג · ${pts.length} אימונים</div></div>`;
+}
+/* backup: export / import */
+const dump=()=>JSON.stringify({app:'gym',v:1,at:new Date().toISOString(),regions:S.regions,logs:S.logs,cur:S.cur});
+function bkBody(){
+  let b='';
+  if(ui.bk==='exp')b=`<div class="mut" style="margin-top:10px">${S.logs.length} אימונים בגיבוי. העתק ושמור, או שמור כקובץ.</div><textarea id="bkout" readonly style="margin-top:8px;font-size:12px;direction:ltr">${esc(dump())}</textarea><div class="row"><button class="btn sm" style="flex:1" data-copy="1">העתק</button><button class="btn alt sm" style="flex:1" data-file="1">שמור כקובץ</button></div>`;
+  if(ui.bk==='imp')b=`<div class="mut" style="margin-top:10px">הדבק כאן את הגיבוי, או בחר קובץ גיבוי:</div><textarea id="bkin" placeholder="{...}" style="margin-top:8px;font-size:12px;direction:ltr"></textarea><input type="file" id="bkfile" accept=".json,application/json,text/plain" style="margin-top:8px"><button class="btn big" data-doimp="1">יבא והחלף את הנתונים כאן</button>`;
+  return b+(ui.bkMsg?`<div class="mut" style="color:#ff8a5c;margin-top:10px">${esc(ui.bkMsg)}</div>`:'');
+}
+function doImport(t){
+  const d=JSON.parse(t);
+  if(!d||!Array.isArray(d.logs))throw new Error('bad');
+  S=Object.assign(clone(DEF),{regions:d.regions,logs:d.logs,cur:d.cur||null});norm();save();
+  ui.bk='';ui.bkMsg='יובאו '+S.logs.length+' אימונים.';render();
+}
+function vP(){
+  return S.regions.map(r=>`<div class="card"><h2>${esc(r.name)}</h2><div class="mut">תרגיל בכל שורה</div><textarea data-pe="${esc(r.id)}">${esc(r.ex.join('\n'))}</textarea></div>`).join('')
+  +`<div class="card"><h2>גיבוי והעברת נתונים</h2><div class="mut">ייצוא שומר את כל האימונים והתרגילים. יבוא מחליף את הנתונים כאן בנתונים מהגיבוי.</div><div class="row"><button class="btn sm" style="flex:1" data-exp="1">ייצוא</button><button class="btn alt sm" style="flex:1" data-imp="1">יבוא</button></div>${bkBody()}</div>`
+  +`<div class="mut" style="margin-top:10px">${dbOk?'הנתונים נשמרים בחשבון שלך ומסונכרנים בין מכשירים.':'הנתונים נשמרים במכשיר הזה. כדאי לייצא גיבוי מדי פעם.'} · גרסה 33</div>`;
+}
+/* exercise illustrations */
+const A=(attr,vals,dur=2.4)=>`<animate attributeName="${attr}" values="${vals}" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" dur="${dur}s" repeatCount="indefinite"/>`;
+const RT=(a,b,cx,cy)=>`<animateTransform attributeName="transform" type="rotate" values="${a} ${cx} ${cy};${b} ${cx} ${cy};${a} ${cx} ${cy}" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" dur="2.4s" repeatCount="indefinite"/>`;
+const TR=(a,b)=>`<animateTransform attributeName="transform" type="translate" values="${a};${b};${a}" keyTimes="0;.5;1" calcMode="spline" keySplines=".45 0 .55 1;.45 0 .55 1" dur="2.4s" repeatCount="indefinite"/>`;
+const L=(x1,y1,x2,y2,c='fl')=>`<line class="${c}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+const PS=(pts,c='fl')=>`<polyline class="${c}" points="${pts}"/>`;
+const PA=(a,b,c='fl')=>`<polyline class="${c}" points="${a}">${A('points',a+';'+b+';'+a)}</polyline>`;
+const C=(cx,cy,r,c,an='')=>`<circle class="${c}" cx="${cx}" cy="${cy}" r="${r}">${an}</circle>`;
+const AC=(a,b,r,c)=>C(a[0],a[1],r,c,A('cx',`${a[0]};${b[0]};${a[0]}`)+A('cy',`${a[1]};${b[1]};${a[1]}`));
+const stand=(x,hy=16)=>C(x,hy,6,'hd')+L(x,hy+10,x,hy+40)+L(x,hy+40,x-4,88)+L(x,hy+40,x+5,88);
+const seated=()=>C(36,24,6,'hd')+L(36,32,36,62)+L(36,62,62,62)+L(62,62,62,88)+L(26,68,66,68,'fg');
+
+const ease=x=>(1-Math.cos(Math.PI*x))/2,KS=14;
+const swing=fn=>{const v=[];for(let i=0;i<=KS;i++)v.push(fn(ease(i/KS)));for(let i=KS-1;i>=0;i--)v.push(fn(ease(i/KS)));return v};
+const AF=(attr,fn)=>`<animate attributeName="${attr}" values="${swing(fn).join(';')}" dur="2.4s" repeatCount="indefinite"/>`;
+const pt=(x,y)=>x.toFixed(1)+','+y.toFixed(1);
+const handAt=(E,len,a0,a1)=>u=>{const a=(a0+(a1-a0)*u)*Math.PI/180;return [E[0]+len*Math.cos(a),E[1]+len*Math.sin(a)]};
+const ARM=(E,len,a0,a1,o={})=>{
+  const h=handAt(E,len,a0,a1),fa=u=>pt(E[0],E[1])+' '+pt(...h(u)),p0=h(0);let r='';
+  if(o.cable){const fc=u=>pt(o.cable[0],o.cable[1])+' '+pt(...h(u));r+=`<polyline class="fc" points="${fc(0)}">${AF('points',fc)}</polyline>`}
+  r+=`<polyline class="fo" points="${fa(0)}">${AF('points',fa)}</polyline>`;
+  r+=`<circle class="pl" cx="${p0[0].toFixed(1)}" cy="${p0[1].toFixed(1)}" r="${o.fist||4}">${AF('cx',u=>h(u)[0].toFixed(1))}${AF('cy',u=>h(u)[1].toFixed(1))}</circle>`;
+  return r};
+const oh=cable=>C(38,24,6,'hd')+L(38,34,38,64)+L(38,64,34,88)+L(38,64,43,88)+L(38,36,44,38)+L(44,38,44,18)+(cable?C(12,90,5,'fg'):'')+ARM([44,18],16,125,270,cable?{cable:[12,90]}:{});
+const FIG={
+ plank:()=>L(8,88,92,88,'fg')+L(30,60,30,85)+L(30,85,48,85)+C(17,52,6,'hd')+PA('30,60 57,72','30,60 57,68')+PA('57,72 84,87','57,68 84,87')+PA('32,58 42,56 55,59','32,58 42,54 55,55')+AC([59,62],[59,58],7,'pl'),
+ curl:()=>stand(40)+L(40,30,42,46)+`<g>${RT(0,-125,42,46)}${L(42,46,42,64,'fo')}${C(42,68,4,'pl')}</g>`,
+ tricepsOH:()=>L(22,24,22,68,'fp')+L(24,70,64,70,'fg')+L(30,70,30,90,'fg')+L(58,70,58,90,'fg')+C(38,24,6,'hd')+L(38,34,38,64)+L(38,64,60,64)+L(60,64,60,88)+L(38,36,44,38)+L(44,38,44,18)+ARM([44,18],16,125,270,{fist:5}),
+ ohRope:()=>oh(true),
+ pushdown:()=>stand(36)+L(36,30,38,46)+C(58,8,5,'fg')+ARM([38,46],16,-50,90,{cable:[58,8]}),
+ incline:()=>L(54,78,74,78,'fg')+L(54.5,78,13,54,'fg')+L(64,78,64,92,'fg')+C(19,50,6,'hd')+L(27,55,56,72)+PS('56,72 76,70 76,90')+PA('27,55 35,42 42,29','27,55 40,56 32,46')+AC([42,29],[32,46],5,'pl'),
+ preacher:()=>L(26,22,26,66,'fg')+L(24,68,54,68,'fg')+L(39,39,58,48.5,'fp')+L(56,52,64,90,'fg')+C(32,14,6,'hd')+L(32,24,32,62)+L(32,62,52,62)+L(52,62,52,88)+L(34,30,57,42)+ARM([57,42],16,26.6,-113.4,{}),
+ curlBench:()=>L(24,22,28,62,'fp')+L(26,64,60,64,'fg')+L(44,64,44,90,'fg')+C(34,16,6,'hd')+L(34,26,34,58)+L(34,58,58,58)+L(58,58,58,86)+L(34,30,38,46)+`<g>${RT(0,-125,38,46)}${L(38,46,38,62,'fo')}${C(38,66,4,'pl')}</g>`,
+ lowRope:()=>stand(34)+L(34,30,36,46)+C(74,90,5,'fg')+ARM([36,46],18,90,-35,{cable:[74,90]}),
+ squat:()=>PA('42,26 40,54','52,46 30,68')+PA('40,54 42,72','30,68 52,72')+PA('42,72 42,90','52,72 42,90')+`<circle class="hd" cx="42" cy="16" r="6">${A('cx','42;54;42')}${A('cy','16;36;16')}</circle>`+AC([42,26],[52,46],5,'pl'),
+ legext:()=>L(24,18,24,56,'fg')+L(24,56,58,56,'fg')+C(32,12,6,'hd')+L(32,22,32,52)+L(32,52,56,52)+`<g>${RT(0,-90,56,52)}${L(56,52,56,76,'fo')}${C(56,78,4,'pl')}</g>`,
+ press:()=>L(8,66,92,66,'fg')+C(16,56,6,'hd')+L(24,58,58,58)+PS('58,58 74,50 80,66')+PA('28,56 30,42 28,26','28,56 38,50 30,48')+AC([28,26],[30,48],5,'pl'),
+ pulldown:()=>seated()+PA('36,36 42,20 46,8','36,36 30,50 44,38')+PA('40,8 54,8','38,38 52,38','fo')+PA('47,0 47,8','47,0 45,38','fg'),
+ pullup:()=>L(22,8,78,8,'fg')+`<g>${TR('0 0','0 -18')}${C(50,28,6,'hd')}${L(50,38,50,64)}${L(50,64,44,88)}${L(50,64,56,88)}</g>`+PA('36,8 36,24 44,38','32,8 30,22 44,20')+PA('64,8 64,24 56,38','68,8 70,22 56,20'),
+ shoulder:()=>seated()+PA('36,36 48,46 44,32','36,36 40,22 44,8')+AC([44,32],[44,8],5,'pl'),
+ fly:()=>stand(50,18)+PA('46,32 40,62','46,32 16,30')+PA('54,32 60,62','54,32 84,30')+AC([40,64],[14,30],5,'pl')+AC([60,64],[86,30],5,'pl'),
+ dips:()=>L(22,46,50,46,'fg')+`<g>${TR('0 0','0 10')}${C(36,14,6,'hd')}${L(36,24,36,54)}${PS('36,54 30,70 36,86')}</g>`+PA('36,46 34,38 36,26','36,46 28,48 36,36'),
+ crunch:()=>L(8,80,92,80,'fg')+PS('62,72 76,56 88,72')+PA('62,72 28,72','62,72 42,44')+AC([20,70],[36,36],6,'hd').replace('class="pl"','class="hd"')+PA('28,72 28,42','42,44 44,14')+AC([28,42],[44,14],6,'pl'),
+ gen:()=>`<g>${TR('0 8','0 -8')}${L(28,50,72,50,'fo')}${C(24,50,8,'pl')}${C(76,50,8,'pl')}</g>`
+};
+function kindOf(n,r){
+  const has=w=>n.includes(w);
+  if(has('פלאנק')||has('סטטי צד'))return 'plank';
+  if(has('בשיפוע'))return 'incline';
+  if(has('פולי תחתון'))return 'lowRope';
+  if(has('חבל מעל הראש'))return 'ohRope';
+  if(has('חבל מלפנים'))return 'pushdown';
+  if(has('יד קדמית')&&has('מכשיר'))return 'preacher';
+  if(has('יד קדמית')&&has('משקולת ישיבה'))return 'curlBench';
+  if(has('סקווט'))return 'squat';
+  if(has('פשיטת ברך'))return 'legext';
+  if(has('מקבילים'))return 'dips';
+  if(has('מתח'))return 'pullup';
+  if(has('פולי עליון'))return 'pulldown';
+  if(has('פרישת'))return 'fly';
+  if(has('דחיקת כתפיים'))return 'shoulder';
+  if(has('חזה'))return 'press';
+  if(has('מאחורי הראש')||has('מעל הראש'))return 'tricepsOH';
+  if(has('יד אחורית'))return 'pushdown';
+  if(has('יד קדמית'))return 'curl';
+  if(has('הגה')||has('בטן'))return 'crunch';
+  return ({'חזה':'press','רגליים':'squat','גב':'pulldown','כתפיים':'shoulder','יד קדמית':'curl','יד אחורית':'pushdown','בטן':'crunch'})[r]||'gen';
+}
+const fig=(n,r)=>`<svg class="fig" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet" aria-hidden="true">${FIG[kindOf(n,r)]()}</svg>`;
+/* alternatives via Claude */
+async function findAlt(){
+  ui.altBusy=true;ui.altMsg='';ui.alts=[];render();
+  try{
+    const sample=await claude.use('sample');
+    if(!sample){ui.altMsg='היכולת הזו לא זמינה כאן.';throw new Error('na')}
+    const r=reg(ui.reg);
+    const q='את/ה עוזר/ת של מאמן כושר. המתאמן מחפש תרגילים חלופיים לאזור הגוף: '+r.name+'.\nהתרגילים שכבר ברשימה שלו: '+r.ex.join(', ')+'.\n'+(ui.altNote?'הערה ממנו: '+ui.altNote+'\n':'')+'הצע 5 תרגילים חלופיים בחדר כושר לאותו אזור, שאינם ברשימה שלו. החזר רק JSON: מערך של אובייקטים מהצורה {"name": "שם התרגיל בעברית", "why": "משפט קצר בעברית למה הוא מתאים"}.';
+    const v=await sample.json(q);
+    const arr=Array.isArray(v)?v:(v&&Array.isArray(v.items)?v.items:[]);
+    ui.alts=arr.filter(x=>x&&x.name).slice(0,6).map(x=>({name:String(x.name),why:String(x.why||'')}));
+    if(!ui.alts.length)ui.altMsg='לא התקבלו הצעות, נסה שוב.';
+  }catch(e){
+    if(!ui.altMsg)ui.altMsg=(e&&e.code==='not_granted')?'לא אושרה גישה ל-Claude.':'לא הצלחתי להביא הצעות כרגע.';
+  }
+  ui.altBusy=false;render();
+}
+/* wheel picker */
+const WH=44,W0=-60,WN=311,FR=[0,.25,.5,.75];
+function drawSheet(){
+  const sh=document.getElementById('sheet');
+  if(!ui.pk){sh.innerHTML='';return}
+  const k=ui.pk,isW=k.f==='w',timed=!isW&&isTimed(k.ex);
+  const items=(arr,fmt)=>arr.map((v,i)=>`<div class="wi" data-ix="${i}">${fmt(v)}</div>`).join('');
+  const wheels=isW
+    ?`<div class="ww"><div class="band"></div><div class="wheel" id="wh0">${items(Array.from({length:WN},(_,i)=>W0+i),v=>v)}</div></div><div class="ww fr"><div class="band"></div><div class="wheel" id="wh1">${items(FR,v=>'.'+String(v*100).padStart(2,'0'))}</div></div>`
+    :`<div class="ww"><div class="band"></div><div class="wheel" id="wh0">${timed?items(Array.from({length:13},(_,i)=>30+5*i),v=>v):items(Array.from({length:61},(_,i)=>i),v=>v)}</div></div>`;
+  sh.innerHTML=`<div class="ov" data-pkbg="1"><div class="sh"><h2>${isW?'משקל (ק״ג)':timed?'זמן (שניות)':'חזרות'} · סט ${k.i+1}</h2><div class="mut">${esc(k.ex)}</div><div class="wr">${wheels}</div><div class="row"><button class="btn" style="flex:1" data-pkok="1">אישור</button><button class="btn alt" style="flex:1" data-pkno="1">ביטול</button></div></div></div>`;
+  const set=(id,idx)=>{const w=document.getElementById(id);if(!w)return;w.scrollTop=idx*WH;mark(w)};
+  function mark(w){const i=Math.max(0,Math.min(w.children.length-1,Math.round(w.scrollTop/WH)));[...w.children].forEach((c,j)=>c.classList.toggle('sel',j===i))}
+  sh.querySelectorAll('.wheel').forEach(w=>{let t=0;w.addEventListener('scroll',()=>{cancelAnimationFrame(t);t=requestAnimationFrame(()=>mark(w))})});
+  if(isW){const v=+k.start,whole=v>=0?Math.floor(v):Math.ceil(v),fr=Math.abs(v-whole);let fi=FR.reduce((b,x,i)=>Math.abs(x-fr)<Math.abs(FR[b]-fr)?i:b,0);set('wh0',Math.max(0,Math.min(WN-1,whole-W0)));set('wh1',fi)}
+  else if(timed)set('wh0',Math.max(0,Math.min(12,Math.round((+k.start-30)/5))));
+  else set('wh0',Math.max(0,Math.min(60,Math.round(+k.start))));
+}
+function pickStart(ex,i,f){
+  const cur=S.cur.sets[ex],s=cur[i];
+  if(s[f]!=='')return +s[f];
+  const l=lastOf(ex);
+  if(i>0&&cur[i-1][f]!=='')return +cur[i-1][f];
+  if(f==='w'){const v=suggestW(ex);return v===''?20:+v}
+  return l&&l.sets[0]?+l.sets[0].r:(isTimed(ex)?60:10);
+}
+function pickValue(){
+  const k=ui.pk,g=id=>{const w=document.getElementById(id);return w?Math.max(0,Math.min(w.children.length-1,Math.round(w.scrollTop/WH))):0};
+  if(k.f==='r')return isTimed(k.ex)?30+5*g('wh0'):g('wh0');
+  const whole=W0+g('wh0'),fr=FR[g('wh1')];
+  return whole<0?whole-fr:whole+fr;
+}
+/* timer */
+let end=0,iv=null;
+const tt=document.getElementById('tt'),tm=document.getElementById('timer');
+const cd=document.getElementById('cd'),cdn=document.getElementById('cdn');let lastCd=-1;
+function tick(){const r=Math.max(0,Math.ceil((end-Date.now())/1000));tt.textContent=Math.floor(r/60)+':'+String(r%60).padStart(2,'0');
+  const show=end>0&&r>0&&r<=10;cd.classList.toggle('on',show);
+  if(show&&r!==lastCd){cdn.textContent=r;cdn.style.animation='none';void cdn.offsetWidth;cdn.style.animation='pop .4s ease-out'}
+  lastCd=show?r:-1;
+  if(end&&r===0){end=0;tm.classList.add('go');beep();setTimeout(()=>tm.classList.remove('go'),3000)}}
+function startT(s){end=s?Date.now()+s*1000:0;clearInterval(iv);if(s)iv=setInterval(tick,250);tick()}
+function beep(){try{navigator.vibrate&&navigator.vibrate([200,100,200]);const a=new (window.AudioContext||window.webkitAudioContext)(),o=a.createOscillator();o.connect(a.destination);o.frequency.value=880;o.start();o.stop(a.currentTime+0.4)}catch(e){}}
+tm.addEventListener('click',e=>{const t=e.target.dataset.t;if(t!==undefined)startT(+t)});
+/* events */
+const go=()=>{render();window.scrollTo(0,0)};
+document.addEventListener('click',e=>{
+  const el=e.target.closest('[data-tab],[data-start],[data-reg],[data-open],[data-back],[data-chip],[data-addex],[data-alt],[data-findalt],[data-addalt],[data-cdstop],[data-pk],[data-pkok],[data-pkno],[data-pkbg],[data-add],[data-del],[data-finish],[data-cancel],[data-delyes],[data-delno],[data-rm],[data-rmyes],[data-rmno],[data-exp],[data-imp],[data-copy],[data-file],[data-doimp]');
+  if(!el)return;const d=el.dataset;
+  if(d.exp){ui.bk=ui.bk==='exp'?'':'exp';ui.bkMsg='';render();return}
+  if(d.imp){ui.bk=ui.bk==='imp'?'':'imp';ui.bkMsg='';render();return}
+  if(d.copy){const t=document.getElementById('bkout');const ok=()=>{ui.bkMsg='הגיבוי הועתק. הדבק אותו באפליקציה החדשה (תרגילים ← יבוא).';render()};
+    const manual=()=>{t.focus();t.select();t.setSelectionRange(0,t.value.length);let c=false;try{c=document.execCommand('copy')}catch(x){}if(c)ok();else{ui.bkMsg='לא הצלחתי להעתיק אוטומטית: סמן את הטקסט והעתק ידנית.';const m=document.querySelector('#bkout~.row');if(m)m.insertAdjacentHTML('afterend','<div class="mut" style="color:#ff8a5c;margin-top:10px">'+esc(ui.bkMsg)+'</div>')}};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t.value).then(ok,manual);else manual();return}
+  if(d.file){const t=dump(),name='gym-backup-'+today()+'.json',blob=new Blob([t],{type:'application/json'});
+    try{const f=new File([blob],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f]}).catch(()=>{});return}}catch(x){}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();return}
+  if(d.doimp){const t=(document.getElementById('bkin').value||'').trim();if(!t){ui.bkMsg='לא הודבק גיבוי.';render();return}
+    try{doImport(t)}catch(x){ui.bkMsg='הגיבוי לא תקין. ודא שהעתקת את כל הטקסט.';render()}return}
+  if(d.cdstop){startT(0);return}
+  if(d.pkbg){if(e.target===el){ui.pk=null;drawSheet()}return}
+  if(d.pk){ui.pk={ex:el.dataset.ex,i:+el.dataset.i,f:d.pk};ui.pk.start=pickStart(ui.pk.ex,ui.pk.i,d.pk);drawSheet();return}
+  if(d.pkno){ui.pk=null;drawSheet();return}
+  if(d.pkok){const k=ui.pk,v=pickValue();S.cur.sets[k.ex][k.i][k.f]=v;ui.pk=null;drawSheet();save();render();if(k.f==='r')startT(90);return}
+  if(d.tab){tab=d.tab;go();return}
+  if(d.start){if(S.cur&&!S.cur.started)S.cur.date=today();ensureCur();save();ui.reg=null;ui.ex=null;go();return}
+  if(d.reg){ui.reg=d.reg;ui.ex=null;ui.alt=false;ui.alts=[];ui.altMsg='';go();return}
+  if(d.open!==undefined){ui.ex=d.open;go();return}
+  if(d.back){if(d.back==='grid'){ui.reg=null;ui.ex=null;ui.alt=false}else{ui.ex=null;ui.alt=false}go();return}
+  if(d.chip){ensureCur();S.cur.label=d.chip;save();render();return}
+  if(d.addex){const inp=document.getElementById('newex'),n=(inp.value||'').trim();if(!n)return;const r=reg(ui.reg);if(!r.ex.includes(n))r.ex.push(n);save();ui.ex=n;go();return}
+  if(d.alt){ui.alt=true;go();return}
+  if(d.findalt){findAlt();return}
+  if(d.addalt!==undefined){const a=ui.alts[+d.addalt],r=reg(ui.reg);if(!a)return;if(!r.ex.includes(a.name))r.ex.push(a.name);save();ui.alt=false;ui.ex=a.name;go();return}
+  if(d.add!==undefined){ensureCur();const a=S.cur.sets[d.add]=S.cur.sets[d.add]||[];if(!S.cur.order.includes(d.add))S.cur.order.push(d.add);
+    a.push({w:a.length?a[a.length-1].w:suggestW(d.add),r:''});save();render();return}
+  if(d.del!==undefined){S.cur.sets[d.del].splice(+d.i,1);save();render();return}
+  if(d.finish){
+    try{
+      const entries=S.cur.order.map(ex=>({ex,sets:(S.cur.sets[ex]||[]).filter(s=>s.w!==''||s.r!=='').map(s=>({w:+s.w||0,r:+s.r||0}))})).filter(x=>x.sets.length);
+      if(!entries.length){ui.msg='לא הוזנו סטים באימון הזה.';render();return}
+      const log={id:String(Date.now()),date:S.cur.date,prog:S.cur.label,entries};
+      const logs=[...S.logs,log].sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:0);
+      S.logs=logs;S.cur=null;ui.reg=null;ui.ex=null;ui.alt=false;ui.msg='';
+      save();startT(0);tab='h';go();
+    }catch(err){ui.msg='השמירה נכשלה: '+(err&&err.message||err);render()}
+    return}
+  if(d.cancel){ui.confirmDel=true;render();return}
+  if(d.delno){ui.confirmDel=false;render();return}
+  if(d.delyes){ui.confirmDel=false;S.cur=null;ui.reg=null;ui.ex=null;ui.alt=false;save();go();return}
+  if(d.rm){ui.rmId=d.rm;render();return}
+  if(d.rmno){ui.rmId=null;render();return}
+  if(d.rmyes){S.logs=S.logs.filter(l=>l.id!==d.rmyes);ui.rmId=null;save();render();return}
+});
+document.addEventListener('change',e=>{
+  if(e.target.id==='bkfile'){const f=e.target.files&&e.target.files[0];if(f)f.text().then(t=>{const b=document.getElementById('bkin');if(b)b.value=t});return}
+  const d=e.target.dataset||{};
+  if(d.f){S.cur.sets[d.ex][+d.i][d.f]=e.target.value;save()}
+  else if(d.pick){pick=e.target.value;render()}
+  else if(d.pe){reg(d.pe).ex=e.target.value.split('\n').map(x=>x.trim()).filter(Boolean);save()}
+});
+document.addEventListener('input',e=>{if(e.target.dataset&&e.target.dataset.note)ui.altNote=e.target.value});
+render();tick();initDb();
+/* offline support when installed from its own site */
+if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude\.ai|claudeusercontent/.test(location.hostname)){navigator.serviceWorker.register('sw.js').catch(()=>{})}
+</script>
+</body>
+</html>
